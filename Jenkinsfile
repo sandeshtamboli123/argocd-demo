@@ -54,29 +54,14 @@ spec:
           sh "git config --global user.name sandesh"
 
           dir("argocd-demo-deploy") {
-            sh "cd ./overlays/qa && kustomize edit set image my-app=*:${env.GIT_COMMIT}"
-            sh "kustomize build ./overlays/qa"
-            sh "git commit -am 'Publish new version'"
+            sh "cd ./chart"
+            sh "def text = readFile file: "values.yaml""
+            sh "text = text.replaceAll("%tag%", "${${GIT_COMMIT}}")" 
+            sh "export GIT_COMMIT=${GIT_COMMIT}"
+            sh "git commit -am 'Update app image tag to ${GIT_COMMIT}'"
             sh "git push"
           }
         }    
-      }
-    }
-
-    stage('Deploy to Prod') {
-      steps {
-        script {
-                def deploymentDelay = input id: 'Deploy', message: 'Deploy to production?', submitter: 'rkivisto,admin', parameters: [choice(choices: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'], description: 'Hours to delay deployment?', name: 'deploymentDelay')]
-                sleep time: deploymentDelay.toInteger(), unit: 'HOURS'
-            }
-        container('tools') {
-          dir("argocd-demo-deploy") {
-            sh "cd ./overlays/prod && kustomize edit set image my-app=*:${env.GIT_COMMIT}"
-            sh "kustomize build ./overlays/prod"
-            sh "git commit -am 'Publish new version'"  
-            sh "git push"
-          }
-        }  
       }
     }
   }
