@@ -54,8 +54,6 @@ spec:
           sh "git config --global user.name sandesh"
             sh """
             cd ./argocd-demo-deploy/chart
-            def text = readFile file: "values.yaml"
-            text = text.replaceAll("%tag%", "${${GIT_COMMIT}}")
             export GIT_COMMIT=${GIT_COMMIT}
             git commit -am 'Update app image tag to ${GIT_COMMIT}'
             git push
