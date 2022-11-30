@@ -53,7 +53,7 @@ spec:
           sh "git config --global user.email sandeshtamboli123@gmail.com"
           sh "git config --global user.name sandesh"
           sh "cd ./argocd-demo-deploy/chart"
-          def text = readFile file: "values.yaml"
+          sh "def text = readFile file: 'values.yaml'"
           sh"""
             text = text.replaceAll("%tag%", "${env.GIT_COMMIT}") 
             export GIT_COMMIT=${env.GIT_COMMIT}
