@@ -54,12 +54,14 @@ spec:
           sh "git config --global user.name sandesh"
 
           dir("argocd-demo-deploy") {
-            sh "cd ./chart"
-            sh "def text = readFile file: "values.yaml""
-            sh "text = text.replaceAll("%tag%", "${${GIT_COMMIT}}")" 
-            sh "export GIT_COMMIT=${GIT_COMMIT}"
-            sh "git commit -am 'Update app image tag to ${GIT_COMMIT}'"
-            sh "git push"
+            sh """
+            cd ./chart
+            def text = readFile file: "values.yaml"
+            text = text.replaceAll("%tag%", "${${GIT_COMMIT}}")
+            export GIT_COMMIT=${GIT_COMMIT}
+            git commit -am 'Update app image tag to ${GIT_COMMIT}'
+            git push
+         """   
           }
         }    
       }
