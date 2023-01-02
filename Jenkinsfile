@@ -30,7 +30,7 @@ spec:
   }
   stages {
 
-    stage('Build') {
+    stage('Image Build') {
       environment {
         DOCKERHUB_CREDS = credentials('dockerHub')
       }
@@ -43,25 +43,41 @@ spec:
       }
     }
 
-    stage('Deploy qa') {
+    stage('Deploy to qa') {
       environment {
-        GIT_CREDS = credentials('sandesh-github-pat')
+        GIT_CREDS = credentials('github_pat_sandesh')
       }
       steps {
         container('tools') {
-          sh"""
-            git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/sandeshtamboli123/argocd-demo-deploy.git
-            git config --global user.email sandeshtamboli123@gmail.com
-            git config --global user.name sandesh
-            cd ./argocd-demo-deploy/chart
-            def text = readFile file: 'values.yaml'
-            text = text.replaceAll("%tag%", "${env.GIT_COMMIT}") 
-            export GIT_COMMIT=${env.GIT_COMMIT}
-            git commit -am 'Update app image tag to ${env.GIT_COMMIT}'
-            git push
-         """   
-        }    
+            sh "git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/sandeshtamboli123/argocd-demo-deploy.git"
+            sh "git config --global user.email sandeshtamboli123@gmail.com"
+            sh "git config --global user.name sandesh"
+
+            dir("argocd-demo-deploy") {
+            sh "cd ./overlays/qa && kustomize edit set image my-app=mynamesandesh/argocd-demo:${env.GIT_COMMIT}"
+            sh "git commit -am 'Update app image tag to ${env.GIT_COMMIT}'"
+            sh "git push"
+            }    
+        }
+     }
+   }
+   stage('Deploy to prod') {
+      environment {
+        GIT_CREDS = credentials('github_pat_sandesh')
       }
-    }
-  }
+      steps {
+        container('tools') {
+            sh "git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/sandeshtamboli123/argocd-demo-deploy.git"
+            sh "git config --global user.email sandeshtamboli123@gmail.com"
+            sh "git config --global user.name sandesh"
+
+            dir("argocd-demo-deploy") {
+            sh "cd ./overlays/prod && kustomize edit set image my-app=mynamesandesh/argocd-demo:${env.GIT_COMMIT}"
+            sh "git commit -am 'Update app image tag to ${env.GIT_COMMIT}'"
+            sh "git push"
+            }    
+        }
+      }
+   }
+}
 }
