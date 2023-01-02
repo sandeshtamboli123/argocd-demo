@@ -45,7 +45,7 @@ spec:
 
     stage('Deploy to qa') {
       environment {
-        GIT_CREDS = credentials('new-github')
+        GIT_CREDS = credentials('github-pat-sandesh-vault')
       }
       steps {
         container('tools') {
