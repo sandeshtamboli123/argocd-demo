@@ -55,8 +55,7 @@ spec:
 
             dir("argocd-demo-deploy") {
             sh "cd ./overlays/qa && kustomize edit set image my-app=mynamesandesh/argocd-demo:${env.GIT_COMMIT}"
-            sh "git commit -am 'Update app image tag to ${env.GIT_COMMIT}'"
-            sh "git push"
+            sh "git commit -am 'Update app image tag to ${env.GIT_COMMIT}' && git push"
             }    
         }
      }
@@ -73,8 +72,7 @@ spec:
 
             dir("argocd-demo-deploy") {
             sh "cd ./overlays/prod && kustomize edit set image my-app=mynamesandesh/argocd-demo:${env.GIT_COMMIT}"
-            sh "git commit -am 'Update app image tag to ${env.GIT_COMMIT}'"
-            sh "git push"
+            sh "git commit -am 'Update app image tag to ${env.GIT_COMMIT}' && git push"
             }    
         }
       }
