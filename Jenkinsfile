@@ -62,18 +62,13 @@ spec:
      }
    }
    stage('Deploy to prod') {
-      environment {
-        GIT_CREDS = credentials('new-github')
-      }
       steps {
+        input message:'Approve deployment?'
         container('tools') {
-            sh "git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/sandeshtamboli123/argocd-demo-deploy.git"
-            sh "git config --global user.email sandeshtamboli123@gmail.com"
-            sh "git config --global user.name sandesh"
-
             dir("argocd-demo-deploy") {
             sh "cd ./overlays/prod && kustomize edit set image my-app=mynamesandesh/argocd-demo:${env.GIT_COMMIT}"
-            sh "git commit -am 'Update app image tag to ${env.GIT_COMMIT}' && git push"
+            sh "git commit -am 'Update app image tag to ${env.GIT_COMMIT}'"
+            sh "git push"
             }    
         }
       }
