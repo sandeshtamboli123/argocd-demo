@@ -45,7 +45,7 @@ spec:
 
     stage('Deploy to qa') {
       environment {
-        GIT_CREDS = credentials('github_pat_sandesh')
+        GIT_CREDS = credentials('github')
       }
       steps {
         container('tools') {
@@ -63,7 +63,7 @@ spec:
    }
    stage('Deploy to prod') {
       environment {
-        GIT_CREDS = credentials('github_pat_sandesh')
+        GIT_CREDS = credentials('github')
       }
       steps {
         container('tools') {
