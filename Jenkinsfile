@@ -32,7 +32,7 @@ spec:
 
     stage('Image Build') {
       environment {
-        DOCKERHUB_CREDS = credentials('dockerHub')
+        DOCKERHUB_CREDS = credentials('dockerhub')
       }
       steps {
         container('docker') {
@@ -45,7 +45,7 @@ spec:
 
     stage('Deploy to qa') {
       environment {
-        GIT_CREDS = credentials('github-pat-sandesh-vault')
+        GIT_CREDS = credentials('github-sandesh-pat')
       }
       steps {
         container('tools') {
