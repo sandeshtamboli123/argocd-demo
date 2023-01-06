@@ -63,8 +63,8 @@ spec:
           dir("argocd-demo-deploy") {
             sh '''
               echo $GIT_COMMIT
-              yq eval '.image.repository = env(IMAGE_REPO)' -i values.yaml
-              yq eval '.image.tag = env(GIT_COMMIT)' -i values.yaml
+              yq eval '.image.repository = env(IMAGE_REPO)' -i ./chart/values.yaml
+              yq eval '.image.tag = env(GIT_COMMIT)' -i ./chart/values.yaml
               cat values.yaml
               git add values.yaml
               git commit -m 'Triggered Build'
@@ -73,18 +73,6 @@ spec:
             }    
         }
      }
-   }
-   stage('Deploy to prod') {
-      steps {
-        input message:'Approve deployment?'
-        container('tools') {
-            dir("argocd-demo-deploy") {
-            sh "cd ./overlays/prod && kustomize edit set image my-app=mynamesandesh/argocd-demo:${env.GIT_COMMIT}"
-            sh "git commit -am 'Update app image tag to ${env.GIT_COMMIT}'"
-            sh "git push"
-            }    
-        }
-      }
    }
 }
 }
