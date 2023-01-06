@@ -67,7 +67,7 @@ spec:
               yq eval '.image.tag = env(GIT_COMMIT)' -i ./chart/values.yaml
               cat ./chart/values.yaml
               git add ./chart/values.yaml
-              git commit -m 'Triggered Build'
+              git commit -m 'changes tag in values file'
               git push 
             '''
             }    
