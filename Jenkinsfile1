@@ -65,8 +65,8 @@ spec:
               echo $GIT_COMMIT
               yq eval '.image.repository = env(IMAGE_REPO)' -i ./chart/values.yaml
               yq eval '.image.tag = env(GIT_COMMIT)' -i ./chart/values.yaml
-              cat values.yaml
-              git add values.yaml
+              cat ./chart/values.yaml
+              git add ./chart/values.yaml
               git commit -m 'Triggered Build'
               git push 
             '''
